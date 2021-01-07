@@ -13,7 +13,7 @@ function app(people) {
       break;
     case 'no':
       // TODO: search by traits
-      searchResults = searchByTraits(people);
+      displayPeople(searchByTraits(people));
       break;
     default:
       app(people); // restart app
@@ -35,7 +35,7 @@ function mainMenu(person, people) {
     return app(people); // restart
   }
 
-  let displayOption = prompt("Found " + person.firstName + " " + person.lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'");
+  let displayOption = prompt("Found " + person[0].firstName + " " + person[0].lastName + " . Do you want to know their 'info', 'family', or 'descendants'? Type the option you want or 'restart' or 'quit'");
 
   switch (displayOption) {
     case "info":
@@ -83,6 +83,7 @@ function displayPeople(people) {
   }).join("\n"));
 }
 
+// Display a person's traits
 function displayPerson(person) {
   // print all of the information about a person:
   // height, weight, age, name, occupation, eye color.
@@ -112,14 +113,19 @@ function yesNo(input) {
   return input.toLowerCase() == "yes" || input.toLowerCase() == "no";
 }
 
+// helper function to pass into promptFor to validate male/fmale answers
+function maleFemale(input) {
+  return input.toLowerCase() == "male" || input.toLowerCase() == "female";
+}
+
 // helper function to pass in as default promptFor validation
 function chars(input) {
   return true; // default validation only
 }
 
-
 function searchByTraits(people) {
   let criteriaSearch = promptFor("Which trait would you like to search by? You can choose gender, height, weight, eye color, or occupation", chars);
+
   let traitSearchResults;
   switch (criteriaSearch) {
     case "gender":
@@ -138,6 +144,8 @@ function searchByTraits(people) {
       traitSearchResults = searchByOccupation(people)
       break;
     default:
+      alert("Not a valid input");
+      searchByTraits(people);
       break;
   }
 
@@ -147,16 +155,21 @@ function searchByTraits(people) {
 function searchByGender(people) {
   let gender = promptFor("What is the person's gender?", chars);
 
-  let foundPeople = people.filter(function (person) {
-    if (person.gender === gender) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  });
+  if (maleFemale(gender)) {
+    var foundPeopleByGender = people.filter(function (person) {
+      if (person.gender === gender.toLowerCase()) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    });
+  } else {
+    alert("Not a valid input")
+    searchByGender(people);
+  }
 
-  return foundPeople;
+  return foundPeopleByGender;
 }
 
 function searchByHeight(people) {
@@ -292,3 +305,8 @@ function familyFormatting(spouse, parents, siblings) {
   return familyMembers;
 }
 
+function displayDescendants(person, people){
+  
+  
+  displayPeople(descendants);
+} 
