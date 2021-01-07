@@ -48,7 +48,7 @@ function mainMenu(person, people) {
       break;
     case "descendants":
       // TODO: get person's descendants
-      displayDescendants(person, people)
+      displayPeople(findDescendants(person[0], people))
       break;
     case "restart":
       app(people); // restart
@@ -121,6 +121,7 @@ function maleFemale() {
     return input.toLowerCase();
   } else {
     alert("Not a valid input")
+    //the recusion of this function was causing issues. The user is currently not reprompted if invalid input is given
     //maleFemale();
   }
 }
@@ -307,8 +308,28 @@ function familyFormatting(spouse, parents, siblings) {
   return familyMembers;
 }
 
-function displayDescendants(person, people){
-  
-  
-  displayPeople(descendants);
+function findDescendants(searchedPerson, people) {
+
+  let descendants = people.filter(function (person) {
+    if (person.parents.includes(searchedPerson.id)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  })
+
+  let searchedpeople = descendants;
+  let newDesc = [];
+
+  if (descendants !== undefined) {
+    for (let i = 0; i < descendants.length; i++) {
+      newDesc = findDescendants(searchedpeople[i], people);
+    }
+    for (let i = 0; i < newDesc.length; i++) {
+      descendants.push(newDesc[i]);
+    }
+  }
+
+  return descendants;
 } 
