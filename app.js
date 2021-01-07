@@ -13,7 +13,7 @@ function app(people) {
       break;
     case 'no':
       // TODO: search by traits
-      displayPeople(searchByTraits(people));
+      displayPeople(traitPrompt(people));
       break;
     default:
       app(people); // restart app
@@ -129,6 +129,16 @@ function maleFemale() {
 // helper function to pass in as default promptFor validation
 function chars(input) {
   return true; // default validation only
+}
+
+function traitPrompt(people){
+  let traitSearchResults = people;
+  do {
+    traitSearchResults = searchByTraits(traitSearchResults);
+    var response = promptFor("Do you want to search by any other traits? 'yes' or 'no'", yesNo).toLowerCase();
+  } while (response == "yes");
+
+  return traitSearchResults;
 }
 
 function searchByTraits(people) {
@@ -309,27 +319,31 @@ function familyFormatting(spouse, parents, siblings) {
 }
 
 function findDescendants(searchedPerson, people) {
+  let descendants;
+  if (searchedPerson !== undefined) {
+    descendants = people.filter(function (person) {
+      if (person.parents.includes(searchedPerson.id)) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    })
 
-  let descendants = people.filter(function (person) {
-    if (person.parents.includes(searchedPerson.id)) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  })
+    let searchedpeople = descendants;
+    let newDesc = [];
 
-  let searchedpeople = descendants;
-  let newDesc = [];
-
-  if (descendants !== undefined) {
-    for (let i = 0; i < descendants.length; i++) {
-      newDesc = findDescendants(searchedpeople[i], people);
-    }
-    for (let i = 0; i < newDesc.length; i++) {
-      descendants.push(newDesc[i]);
+    if (descendants !== undefined) {
+      for (let i = 0; i < descendants.length; i++) {
+        newDesc = findDescendants(searchedpeople[i], people);
+        
+        if (newDesc !== undefined) {
+          for (let j = 0; j < newDesc.length; j++) {
+            descendants.push(newDesc[j]);
+          }
+        }
+      }
     }
   }
-
   return descendants;
 } 
