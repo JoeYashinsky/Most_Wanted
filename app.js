@@ -113,9 +113,16 @@ function yesNo(input) {
   return input.toLowerCase() == "yes" || input.toLowerCase() == "no";
 }
 
-// helper function to pass into promptFor to validate male/fmale answers
-function maleFemale(input) {
-  return input.toLowerCase() == "male" || input.toLowerCase() == "female";
+// helper function to pass seachByGender to validate male/fmale answers
+function maleFemale() {
+  let input = promptFor("What is the person's gender?", chars);
+
+  if (input.toLowerCase() == "male" || input.toLowerCase() == "female") {
+    return input.toLowerCase();
+  } else {
+    alert("Not a valid input")
+    //maleFemale();
+  }
 }
 
 // helper function to pass in as default promptFor validation
@@ -153,21 +160,16 @@ function searchByTraits(people) {
 }
 
 function searchByGender(people) {
-  let gender = promptFor("What is the person's gender?", chars);
+  let gender = maleFemale();
 
-  if (maleFemale(gender)) {
-    var foundPeopleByGender = people.filter(function (person) {
-      if (person.gender === gender.toLowerCase()) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    });
-  } else {
-    alert("Not a valid input")
-    searchByGender(people);
-  }
+  let foundPeopleByGender = people.filter(function (person) {
+    if (person.gender === gender.toLowerCase()) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  });
 
   return foundPeopleByGender;
 }
